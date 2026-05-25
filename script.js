@@ -1,70 +1,67 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f6ff;
-  color: #222;
-}
+const MAX_PERSON = 10;
+const MAX_NAME_LENGTH = 20;
 
-.container {
-  width: 90%;
-  max-width: 600px;
-  margin: 80px auto;
-  text-align: center;
-}
+const personCountInput = document.querySelector("#personCount");
+const makeInputsBtn = document.querySelector("#makeInputsBtn");
+const nameForm = document.querySelector("#nameForm");
+const nameInputs = document.querySelector("#nameInputs");
+const resultBox = document.querySelector("#resultBox");
+const resultText = document.querySelector("#resultText");
 
-h1 {
-  font-size: 42px;
-  margin-bottom: 12px;
-}
+makeInputsBtn.addEventListener("click", function () {
+  const personCount = Number(personCountInput.value);
 
-.card {
-  margin-top: 24px;
-  padding: 28px;
-  background-color: white;
-  border-radius: 22px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-}
+  if (personCount < 1 || personCount > MAX_PERSON) {
+    alert("사람 수는 1명 이상 10명 이하로 입력해주세요.");
+    return;
+  }
 
-label {
-  display: block;
-  margin-bottom: 10px;
-  font-size: 16px;
-}
+  nameInputs.innerHTML = "";
 
-input {
-  width: 90%;
-  max-width: 360px;
-  padding: 12px;
-  margin: 8px 0;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  font-size: 16px;
-}
+  for (let i = 0; i < personCount; i++) {
+    const inputBox = document.createElement("div");
+    inputBox.className = "name-input-box";
 
-button {
-  margin-top: 16px;
-  padding: 13px 24px;
-  border: none;
-  border-radius: 999px;
-  background-color: #5b6cff;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-}
+    const label = document.createElement("label");
+    label.textContent = `${i + 1}번째 사람 닉네임`;
 
-button:hover {
-  background-color: #3f50e0;
-}
+    const input = document.createElement("input");
+    input.type = "text";
+    input.name = "nickname";
+    input.maxLength = MAX_NAME_LENGTH;
+    input.placeholder = "실명 대신 닉네임 입력";
+    input.autocomplete = "off";
 
-.name-input-box {
-  margin-top: 12px;
-}
+    inputBox.appendChild(label);
+    inputBox.appendChild(input);
+    nameInputs.appendChild(inputBox);
+  }
 
-.notice {
-  font-size: 14px;
-  color: #666;
-}
+  nameForm.classList.remove("hidden");
+  resultBox.classList.add("hidden");
+});
 
-.hidden {
-  display: none;
-}
+nameForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const inputs = document.querySelectorAll("input[name='nickname']");
+  const nicknames = [];
+
+  for (const input of inputs) {
+    const nickname = input.value.trim();
+
+    if (nickname === "") {
+      alert("비어 있는 닉네임이 있습니다.");
+      return;
+    }
+
+    nicknames.push(nickname);
+  }
+
+  resultText.textContent = nicknames.join(", ");
+  resultBox.classList.remove("hidden");
+
+  for (const input of inputs) {
+    input.value = "";
+  }
+});
